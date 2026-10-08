@@ -48,11 +48,11 @@ Then the app becomes available through:
 
 ## Main services
 
-- API: http://localhost:8000
-- Web: http://localhost:3000
+- API: http://localhost:18000
+- Web: http://localhost:13000
 - Telegram bot: configured via env
-- Postgres: localhost:5432
-- Redis: localhost:6379
+- Postgres: localhost:15432
+- Redis: localhost:16379
 
 ## Goal
 
