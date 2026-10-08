@@ -1,0 +1,11 @@
+name: telegram
+kind: telegram
+description: Telegram bot permission for outbound communication with the user.
+api_base_url: https://api.telegram.org
+bot_token: ${TELEGRAM_BOT_TOKEN}
+allowed_chat_ids:
+  - "${TELEGRAM_ALLOWED_CHAT_ID}"
+methods:
+  - send_message
+  - send_photo
+  - send_document

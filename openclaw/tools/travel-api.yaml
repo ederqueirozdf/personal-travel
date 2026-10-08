@@ -1,0 +1,27 @@
+name: travel-api
+kind: http
+description: Internal API for flight search and ranking.
+base_url: ${TRAVEL_API_URL}
+method: POST
+auth:
+  type: bearer
+  token: ${TRAVEL_API_KEY}
+endpoints:
+  - name: search_flights
+    path: /api/v1/search
+    method: POST
+    body:
+      origin: "GRU"
+      destination: "LIS"
+      departure_date: "2026-11-10"
+      return_date: "2026-11-20"
+      window_days: 5
+      max_stops: 1
+      baggage_required: true
+      search_mode: "mixed"
+    response_schema:
+      type: object
+      fields:
+        origin: string
+        destination: string
+        results: array

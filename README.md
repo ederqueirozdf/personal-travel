@@ -46,6 +46,23 @@ Then the app becomes available through:
 - https://${COMPOSE_PROJECT_NAME}.${TRAEFIK_HOST}
 - https://api.${COMPOSE_PROJECT_NAME}.${TRAEFIK_HOST}
 
+## OpenClaw integration
+
+This project is prepared to run with an OpenClaw orchestrator that controls the travel agent profile.
+
+The agent profile is located in:
+
+- [openclaw/agents/personal-travel/agent.yaml](openclaw/agents/personal-travel/agent.yaml)
+- [openclaw/agents/personal-travel/instructions.md](openclaw/agents/personal-travel/instructions.md)
+- [openclaw/tools/travel-api.yaml](openclaw/tools/travel-api.yaml)
+- [openclaw/tools/telegram-bot.yaml](openclaw/tools/telegram-bot.yaml)
+
+The agent has explicit permissions to:
+
+- call the travel API for flight searches and ranking
+- send replies to Telegram chats authorized by the bot
+- answer users with top 3 options, baggage, economy and drawbacks
+
 ## Main services
 
 - API: http://localhost:18000

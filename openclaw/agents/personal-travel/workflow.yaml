@@ -1,0 +1,33 @@
+name: personal-travel-search
+version: "1.0.0"
+trigger:
+  - telegram
+  - web
+  - api
+steps:
+  - id: normalize_request
+    type: input_parser
+    description: Extract origin, destination, dates, baggage and flight preferences.
+  - id: call_travel_api
+    type: tool_call
+    tool: travel-api.search_flights
+    params:
+      origin: "${origin}"
+      destination: "${destination}"
+      departure_date: "${departure_date}"
+      return_date: "${return_date}"
+      window_days: "${window_days}"
+      baggage_required: "${baggage_required}"
+      search_mode: "${search_mode}"
+  - id: rank_results
+    type: ranking
+    description: Combine price, miles, baggage and travel realism to select top 3 options.
+  - id: format_reply
+    type: response_formatter
+    description: Build Telegram and web answers with explanation and trade-offs.
+  - id: send_reply
+    type: tool_call
+    tool: telegram.send_message
+    params:
+      chat_id: "${telegram_chat_id}"
+      text: "${formatted_reply}"

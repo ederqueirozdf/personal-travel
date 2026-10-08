@@ -1,0 +1,32 @@
+agent: personal-travel
+version: "1.0.0"
+permissions:
+  api:
+    allowed:
+      - search_flights
+      - get_search_status
+      - get_travel_profile
+    denied:
+      - create_booking
+      - cancel_booking
+      - payment_execute
+  telegram:
+    allowed:
+      - send_message
+    denied:
+      - send_media
+      - send_document
+      - delete_message
+  environment:
+    allowed:
+      - read_env: false
+      - write_env: false
+      - shell: false
+  scope:
+    channels:
+      - telegram
+      - web
+      - api
+    user_groups:
+      - travel-users
+      - authorized-operators
