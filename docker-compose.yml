@@ -1,0 +1,134 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: travel-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: travel_agent
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - travel-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: travel-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - travel-net
+
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    container_name: travel-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8000:8000"
+    networks:
+      - travel-net
+
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: travel-web
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+    networks:
+      - travel-net
+
+  bot:
+    build:
+      context: ./apps/bot
+      dockerfile: Dockerfile
+    container_name: travel-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - api
+    networks:
+      - travel-net
+
+  flight-search-worker:
+    build:
+      context: ./workers/flight-search
+      dockerfile: Dockerfile
+    container_name: travel-flight-worker
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - travel-net
+
+  mileage-search-worker:
+    build:
+      context: ./workers/mileage-search
+      dockerfile: Dockerfile
+    container_name: travel-mileage-worker
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - travel-net
+
+  ranking-worker:
+    build:
+      context: ./workers/ranking
+      dockerfile: Dockerfile
+    container_name: travel-ranking-worker
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - travel-net
+
+  nginx:
+    image: nginx:alpine
+    container_name: travel-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./certbot/conf:/etc/letsencrypt
+    depends_on:
+      - web
+      - api
+      - bot
+    networks:
+      - travel-net
+
+networks:
+  travel-net:
+    driver: bridge

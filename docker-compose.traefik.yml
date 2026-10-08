@@ -1,0 +1,18 @@
+services:
+  web:
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=${COMPOSE_PROJECT_NAME:-travelagent}_travel-net
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME:-travelagent}.rule=Host(`${COMPOSE_PROJECT_NAME:-travelagent}.${TRAEFIK_HOST}`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME:-travelagent}.entrypoints=websecure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME:-travelagent}.tls.certresolver=letsencrypt
+      - traefik.http.services.${COMPOSE_PROJECT_NAME:-travelagent}.loadbalancer.server.port=3000
+
+  api:
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=${COMPOSE_PROJECT_NAME:-travelagent}_travel-net
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME:-travelagent}-api.rule=Host(`api.${COMPOSE_PROJECT_NAME:-travelagent}.${TRAEFIK_HOST}`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME:-travelagent}-api.entrypoints=websecure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME:-travelagent}-api.tls.certresolver=letsencrypt
+      - traefik.http.services.${COMPOSE_PROJECT_NAME:-travelagent}-api.loadbalancer.server.port=8000
